@@ -17,6 +17,12 @@ export default function nodeResolve ( options = {} ) {
 
 	const onwarn = options.onwarn || CONSOLE_WARN;
 	const resolveId = options.browser ? browserResolve : _nodeResolve;
+	const paths = (
+		options.paths ||
+		(process.env.NODE_PATH || '').split(
+			/^win/i.test(process.platform) ? ';' : ':'
+		)
+	);
 
 	return {
 		name: 'node-resolve',
@@ -59,7 +65,8 @@ export default function nodeResolve ( options = {} ) {
 							}
 							return pkg;
 						},
-						extensions: options.extensions
+						extensions: options.extensions,
+						paths: paths
 					},
 					( err, resolved ) => {
 						if ( err ) {
